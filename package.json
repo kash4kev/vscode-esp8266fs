@@ -1,0 +1,77 @@
+{
+    "name": "vscode-esp8266fs",
+    "displayName": "ESP8266FS",
+    "description": "Visual Studio Code extension for ESP8266 File System (SPIFFS)",
+    "version": "0.9.0-rc1",
+    "preview": true,
+    "publisher": "kev-ashley",
+    "engines": {
+        "vscode": "^1.19.0"
+    },
+    "license": "SEE LICENSE IN LICENSE.txt",
+    "icon": "images/esp8266fs.png",
+    "galleryBanner": {
+        "color": "#C80000",
+        "theme": "dark"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/kash4kev/vscode-esp8266fs.git"
+    },
+    "homepage": "https://github.com/kash4kev/vscode-esp8266fs/blob/master/README.md",
+    "bugs": {
+        "url": "https://github.com/kash4kev/vscode-esp8266fs/issues",
+        "email": "kash4kev@gmail.com"
+    },
+    "categories": [
+        "Other"
+    ],
+    "keywords": [
+        "ESP8266",
+        "Arduino",
+        "SPIFFS",
+        "esptool",
+        "mkspiffs"
+    ],
+    "activationEvents": [
+        "onCommand:esp8266fs.uploadData"
+    ],
+    "main": "./esp8266fs",
+    "contributes": {
+        "commands": [
+            {
+                "command": "esp8266fs.uploadData",
+                "title": "ESP8266FS: File System Upload Data"
+            }
+        ],
+        "configuration": {
+            "type": "object",
+            "title": "ESP8266FS Configuration",
+            "properties": {
+                "esp8266fs.path": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Path to Arduino, you can use a custom version of Arduino by modifying this setting to include the full path. Example: 'C:\\Program Files\\Arduino' for Windows, '/Applications' for Mac, '/home/$user/Downloads/arduino-1.8.1' for Linux. (Requires a restart after change)"
+                },
+                "esp8266fs.logLevel": {
+                    "type": "string",
+                    "default": "normal",
+                    "enum": [
+                        "silent",
+                        "normal",
+                        "verbose",
+                        "debug"
+                    ],
+                    "description": "Change amount of \"spew\" sent to the console."
+                }
+            }
+        }
+    },
+    "devDependencies": {
+        "vscode": "^1.1.6"
+    },
+    "dependencies": {
+        "tmp": "0.0.33",
+        "winreg": "^1.2.4"
+    }
+}
