@@ -2,17 +2,17 @@
     "name": "vscode-esp8266fs",
     "displayName": "ESP8266FS",
     "description": "Visual Studio Code extension for ESP8266 File System (SPIFFS)",
-    "version": "0.9.0-rc1",
-    "preview": true,
-    "publisher": "kev-ashley",
+    "version": "1.0.0",
+    "preview": false,
+    "publisher": "kash4kev",
     "engines": {
         "vscode": "^1.19.0"
     },
     "license": "SEE LICENSE IN LICENSE.txt",
     "icon": "images/esp8266fs.png",
     "galleryBanner": {
-        "color": "#C80000",
-        "theme": "dark"
+        "color": "#00C800",
+        "theme": "light"
     },
     "repository": {
         "type": "git",
@@ -28,30 +28,60 @@
     ],
     "keywords": [
         "ESP8266",
+        "iot",
         "Arduino",
         "SPIFFS",
-        "esptool",
-        "mkspiffs"
+        "esptool"
     ],
     "activationEvents": [
-        "onCommand:esp8266fs.uploadData"
+        "onCommand:esp8266fs.uploadSpiffs",
+        "onCommand:esp8266fs.unpackSpiffs",
+        "onCommand:esp8266fs.listSpiffs",
+        "onCommand:esp8266fs.visualizeSpiffs"
     ],
     "main": "./esp8266fs",
     "contributes": {
         "commands": [
             {
-                "command": "esp8266fs.uploadData",
-                "title": "ESP8266FS: File System Upload Data"
+                "command": "esp8266fs.uploadSpiffs",
+                "title": "ESP8266FS: Upload SPIFFS"
+            },
+            {
+                "command": "esp8266fs.unpackSpiffs",
+                "title": "ESP8266FS: Unpack SPIFFS"
+            },
+            {
+                "command": "esp8266fs.listSpiffs",
+                "title": "ESP8266FS: List SPIFFS"
+            },
+            {
+                "command": "esp8266fs.visualizeSpiffs",
+                "title": "ESP8266FS: Visualize SPIFFS"
             }
         ],
         "configuration": {
             "type": "object",
             "title": "ESP8266FS Configuration",
             "properties": {
-                "esp8266fs.path": {
+                "esp8266fs.dataFiles": {
+                    "type": "string",
+                    "default": "./data",
+                    "description": "Location of the files to be packed/unpacked to the SPIFFS image"
+                },
+                "esp8266fs.preferencesPath": {
                     "type": "string",
                     "default": "",
-                    "description": "Path to Arduino, you can use a custom version of Arduino by modifying this setting to include the full path. Example: 'C:\\Program Files\\Arduino' for Windows, '/Applications' for Mac, '/home/$user/Downloads/arduino-1.8.1' for Linux. (Requires a restart after change)"
+                    "description": "Location of the Arduino IDE's preferences.txt file"
+                },
+                "esp8266fs.spiffsImage": {
+                    "type": "string",
+                    "default": "./spiffs.image",
+                    "description": "Name of the SPIFFS file to pack/unpack/upload"
+                },
+                "esp8266fs.python": {
+                    "type": "string",
+                    "default": "python",
+                    "description": "Python executable.  EspOTA works with both Python2 & Python3"
                 },
                 "esp8266fs.logLevel": {
                     "type": "string",
@@ -63,6 +93,69 @@
                         "debug"
                     ],
                     "description": "Change amount of \"spew\" sent to the console."
+                },
+                "esp8266fs.mkspiffs.executable": {
+                    "type": "string",
+                    "default": "",
+                    "description": "mkspiffs executable."
+                },
+                "esp8266fs.mkspiffs.debugLevel": {
+                    "type": "integer",
+                    "default": 0,
+                    "minimum": 0,
+                    "maximum": 5,
+                    "description": "mkspiffs debug level."
+                },
+                "esp8266fs.mkspiffs.allFiles": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Specify if mkspiffs should pack hidden files."
+                },
+                "esp8266fs.esptool.executable": {
+                    "type": "string",
+                    "default": "",
+                    "description": "esptool executable."
+                },
+                "esp8266fs.esptool.verbosity": {
+                    "type": "string",
+                    "default": "",
+                    "enum": [
+                        "",
+                        "v",
+                        "vv",
+                        "vvv"
+                    ],
+                    "description": "esptool debug verbosity."
+                },
+                "esp8266fs.espota.py": {
+                    "type": "string",
+                    "default": "",
+                    "description": "espota.py script."
+                },
+                "esp8266fs.espota.esp.port": {
+                    "type": "integer",
+                    "default": 8266,
+                    "description": "Target ESP8266 IP port."
+                },
+                "esp8266fs.espota.host.ip": {
+                    "type": "string",
+                    "default": "localhost",
+                    "description": "Host IP address."
+                },
+                "esp8266fs.espota.host.port": {
+                    "type": "integer",
+                    "default": "",
+                    "description": "Host IP port."
+                },
+                "esp8266fs.espota.auth": {
+                    "type": "string",
+                    "default": "",
+                    "description": "Authentication password."
+                },
+                "esp8266fs.espota.debug": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Enable debug output."
                 }
             }
         }

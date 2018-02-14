@@ -7,8 +7,9 @@
             "type": "extensionHost",
             "request": "launch",
             "runtimeExecutable": "${execPath}",
-            "args": ["--extensionDevelopmentPath=${workspaceRoot}" ],
-            "stopOnEntry": false
+            "args": [
+                "--extensionDevelopmentPath=${workspaceFolder}"
+            ]
         }
     ]
 }
