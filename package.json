@@ -2,7 +2,7 @@
     "name": "vscode-esp8266fs",
     "displayName": "ESP8266FS",
     "description": "Visual Studio Code extension for ESP8266 File System (SPIFFS)",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "preview": false,
     "publisher": "kash4kev",
     "engines": {
@@ -35,6 +35,7 @@
     ],
     "activationEvents": [
         "onCommand:esp8266fs.uploadSpiffs",
+        "onCommand:esp8266fs.packSpiffs",
         "onCommand:esp8266fs.unpackSpiffs",
         "onCommand:esp8266fs.listSpiffs",
         "onCommand:esp8266fs.visualizeSpiffs"
@@ -45,6 +46,10 @@
             {
                 "command": "esp8266fs.uploadSpiffs",
                 "title": "ESP8266FS: Upload SPIFFS"
+            },
+            {
+                "command": "esp8266fs.packSpiffs",
+                "title": "ESP8266FS: Pack SPIFFS"
             },
             {
                 "command": "esp8266fs.unpackSpiffs",
@@ -77,11 +82,6 @@
                     "type": "string",
                     "default": "./spiffs.image",
                     "description": "Name of the SPIFFS file to pack/unpack/upload"
-                },
-                "esp8266fs.python": {
-                    "type": "string",
-                    "default": "python",
-                    "description": "Python executable.  EspOTA works with both Python2 & Python3"
                 },
                 "esp8266fs.logLevel": {
                     "type": "string",
@@ -134,12 +134,12 @@
                 },
                 "esp8266fs.espota.esp.port": {
                     "type": "integer",
-                    "default": 8266,
+                    "default": "",
                     "description": "Target ESP8266 IP port."
                 },
                 "esp8266fs.espota.host.ip": {
                     "type": "string",
-                    "default": "localhost",
+                    "default": "",
                     "description": "Host IP address."
                 },
                 "esp8266fs.espota.host.port": {
@@ -161,7 +161,7 @@
         }
     },
     "devDependencies": {
-        "vscode": "^1.1.6"
+        "vscode": "^1.1.14"
     },
     "dependencies": {
         "tmp": "0.0.33",
