@@ -1,8 +1,8 @@
 {
     "name": "vscode-esp8266fs",
     "displayName": "ESP8266FS",
-    "description": "Visual Studio Code extension for ESP8266 File System (SPIFFS)",
-    "version": "1.0.1",
+    "description": "Visual Studio Code extension for ESP8266/ESP32 File System (SPIFFS)",
+    "version": "1.1.0",
     "preview": false,
     "publisher": "kash4kev",
     "engines": {
@@ -28,13 +28,14 @@
     ],
     "keywords": [
         "ESP8266",
-        "iot",
+        "ESP32",
         "Arduino",
         "SPIFFS",
         "esptool"
     ],
     "activationEvents": [
         "onCommand:esp8266fs.uploadSpiffs",
+        "onCommand:esp8266fs.downloadSpiffs",
         "onCommand:esp8266fs.packSpiffs",
         "onCommand:esp8266fs.unpackSpiffs",
         "onCommand:esp8266fs.listSpiffs",
@@ -46,6 +47,10 @@
             {
                 "command": "esp8266fs.uploadSpiffs",
                 "title": "ESP8266FS: Upload SPIFFS"
+            },
+            {
+                "command": "esp8266fs.downloadSpiffs",
+                "title": "ESP8266FS: Download SPIFFS"
             },
             {
                 "command": "esp8266fs.packSpiffs",
@@ -127,6 +132,50 @@
                     ],
                     "description": "esptool debug verbosity."
                 },
+                "esp8266fs.esptool.py.before": {
+                    "type": "string",
+                    "default": "default_reset",
+                    "enum": [
+                        "default_reset",
+                        "no_reset"
+                    ],
+                    "description": "esptool.py before parameter."
+                },
+                "esp8266fs.esptool.py.after": {
+                    "type": "string",
+                    "default": "hard_reset",
+                    "enum": [
+                        "hard_reset",
+                        "soft_reset",
+                        "no_reset"
+                    ],
+                    "description": "esptool.py after parameter."
+                },
+                "esp8266fs.esptool.py.noStub": {
+                    "type": "boolean",
+                    "default": "false",
+                    "description": "esptool.py disable launching flasher stub."
+                },
+                "esp8266fs.esptool.py.trace": {
+                    "type": "boolean",
+                    "default": "false",
+                    "description": "esptool.py trace output."
+                },
+                "esp8266fs.esptool.py.spi_connection": {
+                    "type": "string",
+                    "default": "",
+                    "description": "esptool.py override for SPI Flash connection."
+                },
+                "esp8266fs.esptool.py.compress": {
+                    "type": "boolean",
+                    "default": "true",
+                    "description": "esptool.py trace output."
+                },
+                "esp8266fs.esptool.py.verify": {
+                    "type": "boolean",
+                    "default": "false",
+                    "description": "esptool.py verify write."
+                },
                 "esp8266fs.espota.py": {
                     "type": "string",
                     "default": "",
@@ -161,7 +210,7 @@
         }
     },
     "devDependencies": {
-        "vscode": "^1.1.14"
+        "vscode": "^1.1.17"
     },
     "dependencies": {
         "tmp": "0.0.33",

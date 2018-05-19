@@ -10,6 +10,12 @@
             "problemMatcher": []
         },
         {
+            "label": "Update NPM Packages",
+            "type": "shell",
+            "command": "npm update",
+            "problemMatcher": []
+        },
+        {
             "label": "Publish Extension",
             "type": "shell",
             "command": "vsce publish",

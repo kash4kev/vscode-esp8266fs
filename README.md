@@ -1,22 +1,26 @@
-# Visual Studio Code extension for ESP8266 File System (SPIFFS)
+# Visual Studio Code extension for ESP8266/ESP32 File System (SPIFFS) 
 
-![logo](images/logo.png)
+> **Note:** This extension will be retired after this version and the code will be forked to "**vscode-espspiffs**" so as to better reflect the SPIFFS nature of this extension.
 
-Welcome to the Visual Studio extension for the **ESP8266 File System SPIFFS**.
+![esp8266](images/esp8266.png)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;![esp32](images/esp32.png)
 
-This extension provides the same functionality for VSCode as the [Arduino ESP8266 filesystem uploader](https://github.com/esp8266/arduino-esp8266fs-plugin) does for the [Arduino IDE](https://www.arduino.cc/en/Main/Software): it packages and uploads a BLOB to an ESP8266 allowing it to use a portion of it's Flash Memory as a Storage Device with [SPIFFS](http://esp8266.github.io/Arduino/versions/2.0.0-rc2/doc/filesystem.html) (**SPI** **F**lash **F**ile **S**ystem).
+Welcome to the Visual Studio extension for the **ESP8266/ESP32 File System SPIFFS**.
 
-Whereas the **Arduino IDE** version adds a menu item to the IDE (*Tools/ESP8266 Sketch Data Updoad*), VSCode provides no such mechanism.  Instead, this extension implements a VSCode command (`ESP8266FS: Upload SPIFFS`) to perform the same task.
+This extension provides the same functionality for VSCode as the [Arduino ESP8266 filesystem uploader](https://github.com/esp8266/arduino-esp8266fs-plugin) and [Arduino ESP32 filesystem uploader](https://github.com/me-no-dev/arduino-esp32fs-plugin) do for the [Arduino IDE](https://www.arduino.cc/en/Main/Software): it packages and uploads a BLOB to an ESP8266/ESP32 allowing the device to use a portion of it's Flash Memory as a Storage Device using [SPIFFS](http://esp8266.github.io/Arduino/versions/2.0.0-rc2/doc/filesystem.html) (**SPI** **F**lash **F**ile **S**ystem).
+
+Whereas the **Arduino IDE** versions adds menu items to the IDE (*Tools/ESP??? Sketch Data Updoad*), VSCode provides no such mechanism.  Instead, this extension implements a VSCode command (`ESP8266FS: Upload SPIFFS`) to perform the same task.
 
 This extension also adds commands to unpack, list, and "visualize" the contents of a **SPIFFS** image.
 
-While this extension really doesn't need the **Arduino IDE** installed - it only needs the ESP8266 package and tools - it's best to have it installed anyway.  This extension is meant to be a companion extension for the [Arduino for Visual Studio Code](https://github.com/Microsoft/vscode-arduino) plugin, which relies on the **Arduino IDE** to compile and upload code through their toolchain.
+While this extension really doesn't need the **Arduino IDE** installed - it only needs the ESP8266 or ESP32 package and tools - it's best to have it installed anyway.  This extension is meant to be a companion extension for the [Arduino for Visual Studio Code](https://github.com/Microsoft/vscode-arduino) plugin, which relies on the **Arduino IDE** to compile and upload code through their toolchain.
 
 ## Features
 
-* Works with or without the **Arduino for Visual Studio Code** plugin installed.  Just needs [**mkspiffs**](https://github.com/igrr/mkspiffs), [**esptool**](https://github.com/espressif/esptool), and [**espota.py**](https://github.com/esp8266/Arduino/blob/master/tools/espota.py) (if using OTA updating).
+* Works with or without the **Arduino for Visual Studio Code** plugin installed.  Just needs [**mkspiffs**](https://github.com/igrr/mkspiffs), [**esptool**](https://github.com/igrr/esptool-ck) or [**esptool.py**](https://github.com/espressif/esptool), and [**espota.py**](https://github.com/esp8266/Arduino/blob/master/tools/espota.py) (if using OTA updating).
 * Implements VSCode commands to:
-  * pack & upload,
+  * upload,
+  * download,
+  * pack,
   * unpack,
   * list,
   * and visualize a **SPIFFS** image.
@@ -26,13 +30,33 @@ While this extension really doesn't need the **Arduino IDE** installed - it only
   * or **...arduino.../preferences.txt**.
 * Overrides available for all toolchain settings in the **settings.json** file.
 
-> Tip: Add the "esp866fs.uploadSpiffs" command to your **gulp/webpack** toolchain to turn your ESP8266 into a "one-button" dev cycle.
+> Tip: Add the "esp866fs.packSpiffs" and "esp866fs.uploadSpiffs" command to your **gulp/webpack** toolchain to turn your VSCode/ESP8266/ESP32 into a "one-button" dev cycle.
 
 ## Requirements
 
-The [ESP8266 core for Arduino](https://github.com/esp8266/Arduino) needs to be installed on your computer.  This is best done through the [Arduino IDE](https://www.arduino.cc/en/Main/Software)'s Board Manager (*Tools/Board/Board Manager...*) or via the [Arduino for Visual Studio Code](https://github.com/Microsoft/vscode-arduino)'s `Arduino: Board Manager` command.
+The [ESP8266 core for Arduino](https://github.com/esp8266/Arduino) or [ESP32 core for Ardiuno](https://github.com/espressif/arduino-esp32) needs to be installed on your computer.
 
-If you manually install the ESP8266 package, you can still use this extension by setting all the path location overrides.
+* For the ESP8266, it is best to use the [Arduino IDE](https://www.arduino.cc/en/Main/Software)'s Board Manager (*Tools/Board/Board Manager...*) or use the [Arduino for Visual Studio Code](https://github.com/Microsoft/vscode-arduino)'s `Arduino: Board Manager` command.
+* For the ESP32, follow the instructions in their [**README.md**](https://github.com/espressif/arduino-esp32/blob/master/README.md) for the relevant OS.
+
+If you manually install the package, you can still use this extension by setting the overrides.
+
+## ESP8266 vs. ESP32
+
+Without getting in the differences between the two processors, their Arduino development environments are install in two different locations, through two different methods.
+
+The toolchains for the two are similar, but slightly different.  To upload files the **ESP8266** uses a compile tool called **esptool** and **ESP32** uses a python-based program called **esptool.py**, and the command-line arguments for the two are completely different.
+
+Finally, the **boards.txt** found in both locations use different settings for the same item.  The **EPS32** uses a "partitions" directory with CSV files to describe the memory layouts of the flash.
+
+| Chip    | OS      | Package Location                                                            | Esptool     | Version |  MkSpiffs |
+| ------- | ------- | --------------------------------------------------------------------------- | ----------- | ------- | --------- |
+| ESP8266 | Windows | C:\Users\X\AppData\Local\Arduino15\\esp8266\hardware\esp8266\2.4.1          | esptool.exe | 0.4.13  |   0.2.0   |
+|         | Mac     | ~/Library/Arduino15/packages/esp8266/hardware/esp8266/2.4.1                 | esptool     |         |           |
+|         | Linux   | ~/.arduino15/packages/esp8266/hardware/esp8266/2.4.1                        | esptool     |         |           |
+| ESP32   | Windows | C:\Users\X\Documents\Arduino\hardware\espressif\esp32                       | esptool.py  |         |   0.2.2   |
+|         | Mac     | ~/Documents/Arduino/hardware/espressif/esp32                                | esptool.py  |         |           |
+|         | Linux   | ~/Arduino/hardware/espressif/esp32                                          | esptool.py  |         |           |
 
 ## Installation
 
@@ -54,13 +78,17 @@ After installing this extension, you need to:
 
 1. Add the URL **[http://arduino.esp8266.com/stable/package_esp8266com_index.json](http://arduino.esp8266.com/stable/package_esp8266com_index.json)** to the Additional Board URL settings.
 
-1. Install the **ESP8266** board from the Board Manager: (VSCode: `Arduino: Board Manager`, or IDE: `Tools/Board/Board Manager...`).
+1. Either:
 
-1. Select an **ESP8266** board as the target development board.
+    a. Install the **ESP8266** board from the Board Manager: (VSCode: `Arduino: Board Manager`, or IDE: `Tools/Board/Board Manager...`).
+
+    b. Install the **ESP32** board using the instructions in their [**README.md**](https://github.com/espressif/arduino-esp32/blob/master/README.md).
+
+1. Select an **ESP8266/ESP32** board as the target development board.
 
 1. Select the desired **SPIFFS** program/storage split (Arduino: *Tools/Flash Size...*, VSCode: *arduino.changeBoardType*).
 
-1. Create and populate a directory with the files to be uploaded to the target **ESP8266 SPIFFS** partition - **`i.e. that will replace the current ESP8266 SPIFFS contents!`**
+1. Create and populate a directory with the files to be uploaded to the target **ESP??? SPIFFS** partition - **`i.e. that will replace the current SPIFFS contents!`**
 
 1. Set the `esp8266fs.dataFiles` setting to point the base directory of the files that will be uploaded.  If the default directory **./data** is used, this setting can be ignored.
 
@@ -80,15 +108,20 @@ All of the commands send their spew to the ESP8266FS OUTPUT window.  The amount 
 
 | Name                                    | Command id                  | Description                                  |
 | --------------------------------------- |:--------------------------- |:-------------------------------------------- |
-| `ESP8266FS: Upload SPIFFS`              | *esp8266fs.uploadSpiffs*    | Create and Upload a SPIFFS image.            |
-| `ESP8266FS: Pack SPIFFS`                | *esp8266fs.packSpiffs*      | Creates the SPIFFS image.      |
+| `ESP8266FS: Upload SPIFFS`              | *esp8266fs.uploadSpiffs*    | Upload a SPIFFS image.                       |
+| `ESP8266FS: Download SPIFFS`            | *esp8266fs.downloadSpiffs*  | Download a SPIFFS image.                     |
+| `ESP8266FS: Pack SPIFFS`                | *esp8266fs.packSpiffs*      | Creates the SPIFFS image.                    |
 | `ESP8266FS: Unpack SPIFFS`              | *esp8266fs.unpackSpiffs*    | Unpacks the contents of a SPIFFS image.      |
 | `ESP8266FS: List SPIFFS`                | *esp8266fs.listSpiffs*      | List the contents of a SPIFFS image.         |
 | `ESP8266FS: Visualize SPIFFS`           | *esp8266fs.visualizeSpiffs* | "Visualizes" the contents of a SPIFFS image. |
 
-### Pack & Upload
+### Upload
 
-`ESP8266FS: Upload SPIFFS` - this command packs all of the files in the `esp8266fs.dataFiles` subdirectory using the **mkspiffs** tool into the `esp8266fs.spiffsImage` file.  The `esp8266fs.spiffsImage` will then be sent to the **ESP8266** using the **esptool** or **espota.py** tool (depending on the output port).
+`ESP8266FS: Upload SPIFFS` - This command sends the `esp8266fs.spiffsImage` to the **ESP8266** using the **esptool**, **epstool.py** or **espota.py** tool (depending on the output port or target chip).
+
+### Dowload
+
+`ESP8266FS: Download SPIFFS` - This command fetchs the `esp8266fs.spiffsImage` from the **ESP8266** using the **epstool.py** (EPS8266 users can point `esp8266fs.esptool.executable` to a copy of **esptool.py**).
 
 ### Pack
 
@@ -116,10 +149,6 @@ The following Visual Studio Code settings are available for the **ESP8266FS** ex
 {
     ...
 
-        //--- Arduino for Visual Studio Code setting
-
-    "arduino.path": "C:/Program Files (x86)/Arduino",
-
         //--- Python path - needed for espOTA.py
 
     "python.pythonPath": "C:/Python34/python.exe",
@@ -127,7 +156,8 @@ The following Visual Studio Code settings are available for the **ESP8266FS** ex
         //--- ESP8266FS for Visual Studio Code settings
 
     "esp8266fs.dataFiles": "./data",
-    "esp8266fs.preferencesPath" : "C:/Users/X/AppData/Local/Arduino15",
+    "esp8266fs.preferencesPath": "C:/Users/X/AppData/Local/Arduino15",
+    "esp8266fs.arduinoUserPath": "C:/Users/X/Documents/Arduino",
     "esp8266fs.spiffsImage": "./temp/spiffs.image.bin",
     "esp8266fs.logLevel": "normal",
 
@@ -137,6 +167,14 @@ The following Visual Studio Code settings are available for the **ESP8266FS** ex
 
     "esp8266fs.esptool.executable": "C:/Users/X/AppData/Local/Arduino15/packages/esp8266/tools/esptool/0.4.12/esptool.exe",
     "esp8266fs.esptool.verbosity": "vvv",
+
+    "esp8266fs.esptool.py.before": "default_reset",
+    "esp8266fs.esptool.py.after": "hard_reset",
+    "esp8266fs.esptool.py.no_stub": "false",
+    "esp8266fs.esptool.py.trace": "false",
+    "esptool.py.spi_connection": "SPI",
+    "esptool.py.compress": "true",
+    "esptool.py.verify": "false",
 
     "esp8266fs.espota.py": "C:/Users/X/AppData/Local/Arduino15/packages/esp8266/hardware/esp8266/2.4.0/espota.py",
     "esp8266fs.espota.esp.port": 8266,
@@ -150,12 +188,7 @@ The following Visual Studio Code settings are available for the **ESP8266FS** ex
 
 ### vscode
 
-* `arduino.path` - (*defined by the **Arduino for Visual Studio Code** plugin).   From their README: Path to Arduino, you can use a custom version of Arduino by modifying this setting to include the full path. Example: "`C:\\Program Files\\Arduino`" for Windows, "`/Applications`" for Mac, "`/home/$user/Downloads/arduino-1.8.1`" for Linux.
-
-> Note: this parameter is **mandatory** for Linux as the `arduino` shell command can be placed anywhere and is not installed through the OS.  Do not use the **Arduino IDE** installable through any Ubuntu repositories (they're too old) - install the latest version found at [www.arduino.cc](https://www.arduino.cc/en/Main/Software).
-
-* `python.pythonPath` - Path to the **python** executable; as defined by the VSCode Python Environment. Can be set via the `Python: Select Interpreter` command.
-If not specified, then "**python**" will be used.  Only needed if using OTA (espota.py).
+* `python.pythonPath` - Path to the **python** executable; as defined by the VSCode Python Environment. Can be set via the `Python: Select Interpreter` command.  If not specified, then "**python**" will be used.  Only needed if using OTA (espota.py).
 
 ### esp8266fs
 
@@ -181,12 +214,30 @@ If not specified, then "**python**" will be used.  Only needed if using OTA (esp
 
 * `esp8266fs.esptool.verbosity` - **esptool** verbosity.  Add more **v**'s to be more verbose.  Default is no **v**'s.
 
+### esptool.py
+
+* `esptool.py.before` - "What to do before connecting to the chip".
+
+* `esptool.py.after` - "What to do after esptool.py is finished".
+
+* `esptool.py.no_stub` - "Disable launching the flasher stub, only talk to ROM".
+
+* `esptool.py.trace` - "Enable trace-level output of esptool.py interactions".
+
+* `esptool.py.spi_connection` - "Override default SPI Flash connection. Value can be SPI, HSPI or a comma-separated list of 5 I/O numbers to use for SPI flash (CLK,Q,D,HD,CS)".
+
+* `esptool.py.compress` - "Compress data in transfer (default "true" unless "no-stub" is specified)".
+
+* `esptool.py.verify` - "Verify just-written data on flash (mostly superfluous, data is read back during flashing)".
+
 ### espota
 
 * `esp8266fs.espota.py` - Path to the **espota** python script.  If not specified, then ESP8266FS will attempt to locate it through the Arduino settings.
 
 * `esp8266fs.espota.esp.port` - IP port for the target **ESP8266**.  Default is **8266**.
+
 * `esp8266fs.espota.host.ip` - IP address for the host.  Default is "**0.0.0.0**".
+
 * `esp8266fs.espota.host.port` - IP port for the host.  Default is a random port: 10000-60000.
 
 * `esp8266fs.espota.auth` - Authentication password for the **espota** python script.  Default is not set.
@@ -208,7 +259,7 @@ The following settings are per sketch settings (*defined by the **Arduino for Vi
 * `port` - Name of the serial port connected to the device. Can be set by the `Arduino: Select Serial Port` command.  Alternatively, if you specify an IP address (x.x.x.x), then the `espota.py` script will be executed to communicate with the ESP8266 (**OTA** = **O**ver **T**he **A**ir).
 
 * `board` - Current selected Arduino board alias. Can be set by the `Arduino: Change Board Type` command. Also, you can find the board list there.
-* `configuration` - (*Undocumented*) A comma-delimited string of the configuration settings selected for all board "menu" items.  **ESP8266FS** relies on two key/value pairs in the string: `FlashSize` and `ResetMethod`.
+* `configuration` - (*Undocumented*) A comma-delimited string of the configuration settings selected for all board "menu" items.  **ESP8266FS** relies on four key/value pairs in the string: `FlashSize`, `FlashMode`, `FlashFreq` and `ResetMethod`.
 
 Alternatively, if the `.vscode/arduino.json` file doesn't exist, or a particular setting is not defined, then the settings in the **Arduino IDE**'s `preferences.txt` file will be used instead.  This file is generated by the **Arduino IDE** and is set globally for ALL sketches.
 
@@ -259,6 +310,18 @@ None - that I know of.  Please [submit a bug or feature suggestion](http://githu
 
 ## Release Notes
 
+## [1.1.0] 2018-5-23
+
+* Added support for the ESP32 library package (espressif/esp32).
+* Added support for "esptool.py" found in the ESP32 library.
+* FlashSize now supports "generic" settings.
+* Changed package.json "keyword" from "iot" -> "ESP32".
+* "esp8266fs.upload" now only uploads - pack is done separately.
+* Added "espspiffs.download" for user of "esptool.py".
+* Added "esp8266fs.arduinoUserPath" setting.
+* Added "esp8266fs.esptool.py..." settings.
+* Removed unnecessary code.
+
 ## [1.0.1] 2018-4-7
 
 * Fixed errata and ran **markdownlint** on all .md files.
@@ -274,7 +337,7 @@ None - that I know of.  Please [submit a bug or feature suggestion](http://githu
 * Fixed errata and expanded documentation.
 * Located espota.py correctly.
 * Changed `esp8266fs.uploadData` -> `esp8266fs.uploadSpiffs`.
-* Added `esp8266fs.unpackSpiffs`, `esp8266fs.listSpiffs`, and *esp8266fs.visualizeSpiffs`.
+* Added `esp8266fs.unpackSpiffs`, `esp8266fs.listSpiffs`, and `esp8266fs.visualizeSpiffs`.
 * Added a variety of settings.json values to allow full control of the mkspiffs *rocess.
 * Fixed various bugs and cleaned up code heirarchy.
 * Updated Github infrastructure.

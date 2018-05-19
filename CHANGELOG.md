@@ -5,6 +5,18 @@ All notable changes to the "vscode-esp8266fs" extension will be documented in th
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] 2018-5-18
+
+* Added support for the ESP32 library package (espressif/esp32).
+* Added support for "esptool.py" found in the ESP32 library.
+* FlashSize now supports "generic" settings.
+* Changed package.json "keyword" from "iot" -> "ESP32".
+* "esp8266fs.upload" now only uploads - pack is done separately.
+* Added "espspiffs.download" for user of "esptool.py".
+* Added "esp8266fs.arduinoUserPath" setting.
+* Added "esp8266fs.esptool.py..." settings.
+* Removed unnecessary code.
+
 ## [1.0.1] 2018-4-7
 
 * Fixed errata and ran **markdownlint** on all .md files.
@@ -20,7 +32,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 * Fixed errata and expanded documentation.
 * Located espota.py correctly.
 * Changed `esp8266fs.uploadData` -> `esp8266fs.uploadSpiffs`.
-* Added `esp8266fs.unpackSpiffs`, `esp8266fs.listSpiffs`, and *esp8266fs.visualizeSpiffs`.
+* Added `esp8266fs.unpackSpiffs`, `esp8266fs.listSpiffs`, and `esp8266fs.visualizeSpiffs`.
 * Added a variety of settings.json values to allow full control of the mkspiffs *rocess.
 * Fixed various bugs and cleaned up code heirarchy.
 * Updated Github infrastructure.
