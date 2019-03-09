@@ -506,7 +506,7 @@ function getTarget(arduinoJson, preferences) {
     if (!["esp8266", "esp32"].includes(target.architecture))
         throw `Current Arduino package/architecture is not ESP8266 or ESP32.`;
 
-    target.flashSize = getPreference(arduinoJson, preferences, "FlashSize");
+    target.flashSize = getPreference(arduinoJson, preferences, "eesz");
     target.flashMode = getPreference(arduinoJson, preferences, "FlashMode", "keep");
     target.flashFreq = getPreference(arduinoJson, preferences, "FlashFreq", "keep");
 
@@ -580,7 +580,7 @@ function getSpiffsOptions(packagesPath, target, arduinoJson, preferences) {
     readLines(path.join(packagesPath, "boards.txt"))
         .forEach(line => {
             const match = line.match(`${target.board}\\.(?:build|upload)\\.(\\S+)=(\\S+)`)
-                       || line.match(`${target.board}\\.menu\\.FlashSize\\.${target.flashSize}\\.(?:build|upload)\\.(\\S+)=(\\S+)`)
+                       || line.match(`${target.board}\\.menu\\.eesz\\.${target.flashSize}\\.(?:build|upload)\\.(\\S+)=(\\S+)`)
                        || line.match(`${target.board}\\.menu\\.PartitionScheme\\.${arduinoJson.PartitionScheme}\\.(?:build|upload)\\.(\\S+)=(\\S+)`);
 
             if (match)
