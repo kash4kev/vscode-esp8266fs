@@ -478,14 +478,20 @@ function _getTarget(arduinJson, preferences) {
 
 //------------------------------------------------------------------------------
 
-function getPreference(arduinoJson, preferences, index) {
+function getPreference(arduinoJson, preferences, index, defval) {
+
     if (arduinoJson.hasOwnProperty(index))
         return arduinoJson[index];
 
     const value = preferences["custom_" + index];
 
-    if (!value)
-        throw `Can't determine ${index}.`;
+    if (!value) {
+        if (defval != undefined) {
+            return defval;
+        } else {
+            throw `Can't determine ${index}.`;
+        }
+    }
 
     const match = value.match(/^(${target.board}|generic)_(\S+)/);
 
@@ -501,8 +507,8 @@ function getTarget(arduinoJson, preferences) {
         throw `Current Arduino package/architecture is not ESP8266 or ESP32.`;
 
     target.flashSize = getPreference(arduinoJson, preferences, "FlashSize");
-    target.flashMode = getPreference(arduinoJson, preferences, "FlashMode");
-    target.flashFreq = getPreference(arduinoJson, preferences, "FlashFreq");
+    target.flashMode = getPreference(arduinoJson, preferences, "FlashMode", "keep");
+    target.flashFreq = getPreference(arduinoJson, preferences, "FlashFreq", "keep");
 
     logDebug(`target:`);
     JSONify(target).split("\n").map(line => logDebug(line));
