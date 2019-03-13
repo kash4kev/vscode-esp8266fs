@@ -616,8 +616,8 @@ function getSpiffsOptions(packagesPath, target, arduinoJson, preferences) {
     spiffsOptions.flashFreq = preferences.flash_freq;
     spiffsOptions.flashSize = "0x" + toHex(stringToInt(spiffsOptions.spiffs_start) + stringToInt(spiffsOptions.dataSize));
 
-    if (arduinoJson.UploadSpeed)
-        spiffsOptions.speed = arduinoJson.UploadSpeed;
+    if (arduinoJson.baud)
+        spiffsOptions.speed = arduinoJson.baud;
 
     if (arduinoJson.ResetMethod)
         spiffsOptions.resetmethod = arduinoJson.ResetMethod;
