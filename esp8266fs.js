@@ -478,14 +478,20 @@ function _getTarget(arduinJson, preferences) {
 
 //------------------------------------------------------------------------------
 
-function getPreference(arduinoJson, preferences, index) {
+function getPreference(arduinoJson, preferences, index, defval) {
+
     if (arduinoJson.hasOwnProperty(index))
         return arduinoJson[index];
 
     const value = preferences["custom_" + index];
 
-    if (!value)
-        throw `Can't determine ${index}.`;
+    if (!value) {
+        if (defval != undefined) {
+            return defval;
+        } else {
+            throw `Can't determine ${index}.`;
+        }
+    }
 
     const match = value.match(/^(${target.board}|generic)_(\S+)/);
 
@@ -500,9 +506,9 @@ function getTarget(arduinoJson, preferences) {
     if (!["esp8266", "esp32"].includes(target.architecture))
         throw `Current Arduino package/architecture is not ESP8266 or ESP32.`;
 
-    target.flashSize = getPreference(arduinoJson, preferences, "FlashSize");
-    target.flashMode = getPreference(arduinoJson, preferences, "FlashMode");
-    target.flashFreq = getPreference(arduinoJson, preferences, "FlashFreq");
+    target.flashSize = getPreference(arduinoJson, preferences, "eesz");
+    target.flashMode = getPreference(arduinoJson, preferences, "FlashMode", "keep");
+    target.flashFreq = getPreference(arduinoJson, preferences, "FlashFreq", "keep");
 
     logDebug(`target:`);
     JSONify(target).split("\n").map(line => logDebug(line));
@@ -574,7 +580,7 @@ function getSpiffsOptions(packagesPath, target, arduinoJson, preferences) {
     readLines(path.join(packagesPath, "boards.txt"))
         .forEach(line => {
             const match = line.match(`${target.board}\\.(?:build|upload)\\.(\\S+)=(\\S+)`)
-                       || line.match(`${target.board}\\.menu\\.FlashSize\\.${target.flashSize}\\.(?:build|upload)\\.(\\S+)=(\\S+)`)
+                       || line.match(`${target.board}\\.menu\\.eesz\\.${target.flashSize}\\.(?:build|upload)\\.(\\S+)=(\\S+)`)
                        || line.match(`${target.board}\\.menu\\.PartitionScheme\\.${arduinoJson.PartitionScheme}\\.(?:build|upload)\\.(\\S+)=(\\S+)`);
 
             if (match)
@@ -610,8 +616,8 @@ function getSpiffsOptions(packagesPath, target, arduinoJson, preferences) {
     spiffsOptions.flashFreq = preferences.flash_freq;
     spiffsOptions.flashSize = "0x" + toHex(stringToInt(spiffsOptions.spiffs_start) + stringToInt(spiffsOptions.dataSize));
 
-    if (arduinoJson.UploadSpeed)
-        spiffsOptions.speed = arduinoJson.UploadSpeed;
+    if (arduinoJson.baud)
+        spiffsOptions.speed = arduinoJson.baud;
 
     if (arduinoJson.ResetMethod)
         spiffsOptions.resetmethod = arduinoJson.ResetMethod;
