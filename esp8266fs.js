@@ -532,7 +532,22 @@ function getEspPackagePath(arduinoUserPath, preferencesPath, target) {
         }
 
         case "esp32": {
-            const esp32Path = path.join(arduinoUserPath, "hardware", target.package, target.architecture);
+            var esp32Path = path.join(arduinoUserPath, "hardware", target.package, target.architecture);
+
+            // try same as esp8266
+            if (!dirExists(esp32Path)) {
+                const dir = path.join(preferencesPath, "packages", target.package, "hardware", target.architecture);
+
+                if (!dirExists(dir))
+                    throw `ESP32 has not been installed correctly - see https://github.com/espressif/arduino-esp32.`;
+
+                const folders = getFolders(dir);
+
+                if (folders.length != 1)
+                    throw `There should only be one ESP32 Package installed with the Arduino Board Manager.`;
+
+                esp32Path = path.join(dir, folders[0]);
+            }
 
             if (!dirExists(esp32Path))
                 throw `ESP32 has not been installed correctly - see https://github.com/espressif/arduino-esp32.`;
@@ -625,9 +640,10 @@ function getSpiffsOptions(packagesPath, target, arduinoJson, preferences) {
 //------------------------------------------------------------------------------
 
 function getEspToolsPath(arduinoUserPath, preferencesPath, target) {
-    const dir = target.architecture == "esp8266"
-                ? path.resolve(path.join(preferencesPath, "packages", target.architecture, "tools"))
-                : path.resolve(path.join(arduinoUserPath, "hardware", target.package, target.architecture, "tools"));
+    var dir = path.resolve(path.join(preferencesPath, "packages", target.architecture, "tools"));
+
+    if (target.architecture == "esp32" && !dirExists(dir))
+        dir = path.resolve(path.join(arduinoUserPath, "hardware", target.package, target.architecture, "tools"));
 
     if (!dirExists(dir))
         throw `Can't find tools path.`;
@@ -706,7 +722,17 @@ function getMkSpiffs(target, espToolsPath) {
         }
 
         case "esp32": {
-            const mkspiffs = path.join(espToolsPath, "mkspiffs", program("mkspiffs"));
+            var mkspiffs = path.join(espToolsPath, "mkspiffs", program("mkspiffs"));
+
+            // try same as esp8266
+            if (!fileExists(mkspiffs)) {
+                const folders = getFolders(path.join(espToolsPath, "mkspiffs"));
+
+                if (folders.length != 1)
+                    throw `"${target.architecture}" not installed correctly through Arduino Board Manager`;
+
+                mkspiffs = path.join(espToolsPath, "mkspiffs", folders[0], program("mkspiffs"));
+            }
 
             if (!fileExists(mkspiffs))
                 throw `"Can't locate "${mkspiffs}"`;
@@ -876,7 +902,19 @@ function getEspTool(target, espToolsPath) {
         }
 
         case "esp32": {
-            const esptoolPy = path.join(espToolsPath, program("esptool.py"));
+            var esptoolPy = path.join(espToolsPath, program("esptool.py"));
+
+            // try same as esp8266
+            if (!fileExists(esptoolPy)) {
+                const folders = getFolders(path.join(espToolsPath, "esptool"));
+
+                if (folders.length != 1)
+                    throw `"${target.architecture}" not installed correctly through Arduino Board Manager`;
+
+                const version = folders[0];
+
+                esptoolPy = path.join(espToolsPath, "esptool", version, program("esptool"));
+            }
 
             if (!fileExists(esptoolPy))
                 throw `"Can't locate "${esptoolPy}"`;
